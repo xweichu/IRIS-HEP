@@ -13,7 +13,7 @@ class MyBasket:
         return self._branchPath
     
     def setBranchPath(self,branchPath):
-        if(branchPath == NULL):
+        if(branchPath == None):
             print("Branch Path can't be null!")
             return
         self._branchPath = branchPath
@@ -84,7 +84,7 @@ class MyBasket:
     def toString(self):
         basketPath = ''
         for i in range(len(self._branchPath)):
-            path = + self._branchPath[i] + ','
+            basketPath = + self._branchPath[i] + ' '
         return basketPath + str(self._number) + ',' + str(self._offset) + ',' + str(self._size) + ',' + str(self._startEntry) + ',' + str(self._endEntry) + ',' + str(self._accessTime)
     
     def save(self, outFileHandler):
@@ -101,7 +101,7 @@ class MyBasket:
         self.setNumber(basket[0])
         self.setOffset(basket[1])
         self.setSize(basket[2])
-        self.setStartEntry(baske[3])
+        self.setStartEntry(basket[3])
         self.setEndEntry(basket[4])
         
         if(len(basket) == 6):

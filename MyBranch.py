@@ -1,3 +1,4 @@
+from MyBasket import MyBasket
 class MyBranch:
 
     def __init__(self, path = [], baskets = [], numOfBaskets = 0, size = 0):
@@ -41,47 +42,47 @@ class MyBranch:
 
 
     def __gt__(self, other):
-        min = min(len(self.getPath()),len(other.getPath()))
-        for i in range(min):
+        minvalue = min(len(self.getPath()),len(other.getPath()))
+        for i in range(minvalue):
             if(self.getPath()[i] == other.getPath()[i]):
                 continue
             else:
-                if(self.getPath()[i] > other.getPath()[i])):
-                    return true
+                if(self.getPath()[i] > other.getPath()[i]):
+                    return True
                 else:
-                    return false
+                    return False
         
         if(len(self.getPath()) > len(other.getPath())):
-            return true
+            return True
         else:
-            return false
+            return False
 
 
     def __lt__(self, other):
-        min = min(len(self.getPath()),len(other.getPath()))
-        for i in range(min):
+        minvalue = min(len(self.getPath()),len(other.getPath()))
+        for i in range(minvalue):
             if(self.getPath()[i] == other.getPath()[i]):
                 continue
             else:
-                if(self.getPath()[i] < other.getPath()[i])):
-                    return true
+                if self.getPath()[i] < other.getPath()[i]:
+                    return True
                 else:
-                    return false
+                    return False
         
         if(len(self.getPath()) < len(other.getPath())):
-            return true
+            return True
         else:
-            return false
+            return False
     
     def __eq__(self, other):
 
         if(len(self.getPath()) != len(other.getPath())):
-            return false
+            return False
 
         for i in range(len(self.getPath())):
             if(self.getPath()[i] != other.getPath()[i]):
-                return false
-        return true
+                return False
+        return True
     
     def toString(self):
         path = ''
@@ -97,8 +98,10 @@ class MyBranch:
         outFileHandler.write("Branch-Path=" + path + '\n')
         outFileHandler.write("Branch-Size=" + str(self.getSize())+'\n')
         outFileHandler.write("Branch-Baskets=" + str(self.getNumOfBaskets())+'\n')
-        
-        outFileHandler.write('Basket=' + str(self._number) + ',' + str(self._offset) + ',' + str(self._size) + ',' + str(self._startEntry) + ',' + str(self._endEntry) + ',' + str(self._accessTime) + '\n')
+        basketsOfBranch = self.getBaskets()
+
+        for basket in basketsOfBranch:
+            basket.save(outFileHandler)
         outFileHandler.flush()
 
 
@@ -106,18 +109,50 @@ class MyBranch:
         line = inputFileHandler.readline()
         line = line.split('=')
         line = line[1]
-        basket = line.split(',')
-        self.setBranchPath([])
-        self.setNumber(basket[0])
-        self.setOffset(basket[1])
-        self.setSize(basket[2])
-        self.setStartEntry(basket[3])
-        self.setEndEntry(basket[4])
+        path = line.split(' ')
+        self.setPath(path)
+
+        line = inputFileHandler.readline()
+        line = line.split('=')
+        size = line[1]
+        self.setSize(int(size))
+
+        line = inputFileHandler.readline()
+        line = line.split('=')
+        basketNo = line[1]
+        self.setNumOfBaskets(int(basketNo))
+
+        baskets = []
+        for i in range(basketNo):
+            mybasket = MyBasket()
+            mybasket.restore(inputFileHandler)
+            baskets.append(mybasket)
         
-        if(len(basket) == 6):
-            self.setAccessTime(basket[5])
-        else:
-            self.setAccessTime(-1)
+        self.setBaskets(baskets)
+
+
+
+
+
+
+
+
+
+
+
+
+        # basket = line.split(',')
+        # self.setBranchPath([])
+        # self.setNumber(basket[0])
+        # self.setOffset(basket[1])
+        # self.setSize(basket[2])
+        # self.setStartEntry(basket[3])
+        # self.setEndEntry(basket[4])
+        
+        # if(len(basket) == 6):
+        #     self.setAccessTime(basket[5])
+        # else:
+        #     self.setAccessTime(-1)
 
 
     

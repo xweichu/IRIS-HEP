@@ -49,7 +49,7 @@ class MyBasket:
         return self._startEntry
     
     def setStartEntry(self,startEntry):
-        if(startEntry < 0):
+        if(startEntry < -1):
             print("Start Entry can't be negative!")
             return
         self._startEntry = startEntry
@@ -58,7 +58,7 @@ class MyBasket:
         return self._endEntry
     
     def setEndEntry(self,endEntry):
-        if(endEntry < 0):
+        if(endEntry < -1):
             print("End Entry can't be negative!")
             return
         self._endEntry = endEntry
@@ -67,7 +67,7 @@ class MyBasket:
         return self._accessTime
     
     def setAccessTime(self,accessTime):
-        if(accessTime < 0):
+        if(accessTime < -1):
             print("Access time can't be negative!")
             return
         self._accessTime = accessTime
@@ -98,14 +98,14 @@ class MyBasket:
         line = line[1]
         basket = line.split(',')
         self.setBranchPath([])
-        self.setNumber(basket[0])
-        self.setOffset(basket[1])
-        self.setSize(basket[2])
-        self.setStartEntry(basket[3])
-        self.setEndEntry(basket[4])
+        self.setNumber(int(basket[0]))
+        self.setOffset(int(basket[1]))
+        self.setSize(int(basket[2]))
+        self.setStartEntry(int(basket[3]))
+        self.setEndEntry(int(basket[4]))
         
         if(len(basket) == 6):
-            self.setAccessTime(basket[5])
+            self.setAccessTime(int(basket[5]))
         else:
             self.setAccessTime(-1)
 

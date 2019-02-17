@@ -1,4 +1,6 @@
 import uproot
+from MyBasket import MyBasket 
+from MyBranch import MyBranch
 
 class RootFile:
 
@@ -40,9 +42,98 @@ class RootFile:
     def extractTreeMetadata(self, tree):
         for key in tree.keys():
             mybranch = tree[key]
-            subbranches = mybranch.keys()
-            print(dir(mybranch))
+            subBranches = mybranch.values()
+            basketBytes = mybranch._fBasketBytes
+            basketEntries = mybranch._fBasketEntry
+            numOfBaskets = len(basketBytes)
+            branchPath = []
+
+            branchPath.append(str(key))
+            branchPath.append(str(mybranch.name))
+
+
+            branchBaskets = []
+            for i in range(numOfBaskets - 1 ):
+                offset = mybranch._fBasketSeek[i]
+                size = basketBytes[i]
+                startEntry = basketEntries[i]
+                endEntry = basketEntries[i + 1] -1;
+                mybasket = MyBasket([], i , offset, size , startEntry, endEntry )
+                branchBaskets.append(mybasket)
             
+            # print(branchPath)
+            newbranch =  MyBranch(branchPath, branchBaskets)
+            self._branches.append(newbranch)
+            self.extractBranchMetadata(subBranches, branchPath, 1+ 1)
+
+    
+    def extractBranchMetadata(self, subBranches, branchName, level):
+        # print(subBranches )
+        
+        for mybranch in subBranches:
+            # print(dir(mybranch))
+            subSubBranches = mybranch.values()
+            basketBytes = mybranch._fBasketBytes
+            basketEntries = mybranch._fBasketEntry
+            numOfBaskets = len(basketBytes)
+            branchPath = []
+            for pre_path in branchName:
+                branchPath.append(pre_path)
+
+            branchPath.append(str(mybranch.name))
+
+            branchBaskets = []
+
+            for i in range(numOfBaskets - 1):
+                offset = mybranch._fBasketSeek[i]
+                size = basketBytes[i]
+                startEntry = basketEntries[i]
+                endEntry = basketEntries[i + 1] -1
+                mybasket = MyBasket([], i , offset, size , startEntry, endEntry )
+                branchBaskets.append(mybasket)
+            
+            newbranch =  MyBranch(branchPath, branchBaskets)
+            self._branches.append(newbranch)
+            self.extractBranchMetadata(subSubBranches, branchPath, level + 1);
+
+
+    def save(self, outFileHandler):
+        print('Saving metadata of Root file ... ')
+        outFileHandler.write('File-Path=' + str(self.getName()) + '\n')
+        outFileHandler.write('File-Size=' + str(self.getSize()) + '\n')
+        outFileHandler.write('File-Branches=' + str(len(self.getBranches())) + '\n')
+        for branch in self.getBranches():
+            branch.save(outFileHandler)
+        
+        
+                
+
+    def restore(self, inputFileHandler):
+        print('Restoring metadata of Root file ... ')
+        line = inputFileHandler.readline()
+        line = line.split('=')
+        filePath = line[1]
+
+        line = inputFileHandler.readline()
+        line = line.split('=')
+        fileSize = int(line[1])
+
+        line = inputFileHandler.readline()
+        line = line.split('=')
+        fileBranches = int(line[1])
+
+        branches = []
+
+        for i in range(fileBranches):
+            myBranch = MyBranch()
+            myBranch.restore(inputFileHandler)
+            branches.append(myBranch)
+        
+        self.setBranches(branches)
+        self.setName(filePath)
+        self.setSize(fileSize)
+
+
 
 
         

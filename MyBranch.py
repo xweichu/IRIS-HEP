@@ -5,7 +5,12 @@ class MyBranch:
         self._path = path
         self._baskets = baskets
         self._numOfBaskets = numOfBaskets
+        size = 0
+        for basket in self._baskets:
+            size += basket.getSize()
+
         self._size = size
+        self.setNumOfBaskets(len(self._baskets))
 
     def getPath(self):
         return self._path
@@ -93,7 +98,7 @@ class MyBranch:
     def save(self, outFileHandler):
         path = ''
         for i in range(len(self._path)):
-            path = + self._path[i] + ' '
+            path += self._path[i] + ' '
         
         outFileHandler.write("Branch-Path=" + path + '\n')
         outFileHandler.write("Branch-Size=" + str(self.getSize())+'\n')
@@ -119,13 +124,14 @@ class MyBranch:
 
         line = inputFileHandler.readline()
         line = line.split('=')
-        basketNo = line[1]
-        self.setNumOfBaskets(int(basketNo))
+        basketNo = int(line[1])
+        self.setNumOfBaskets(basketNo)
 
         baskets = []
         for i in range(basketNo):
             mybasket = MyBasket()
             mybasket.restore(inputFileHandler)
+            mybasket.setBranchPath(self._path)
             baskets.append(mybasket)
         
         self.setBaskets(baskets)

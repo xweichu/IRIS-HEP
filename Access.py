@@ -16,3 +16,16 @@ class Access:
         self._bytesReadDup = bytesReadDup
         self._bytesReadUniq = bytesReadUniq
 
+    def getRootFile(self):
+        return self._rootFile
+    
+    def setRootFile(self, rootFile):
+        self._rootFile = rootFile
+    
+    
+
+
+    def __eq__(self, other):
+        pass
+
+
